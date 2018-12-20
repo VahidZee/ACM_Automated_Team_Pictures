@@ -2,6 +2,7 @@ from PIL import PngImagePlugin
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
+from PIL import ImageEnhance
 import os
 
 
@@ -16,6 +17,8 @@ def create_image(team_number, card, team_pics_path, out_path, padding_left, padd
         return
     w1, h1 = team_pic.size
     team_pic.thumbnail((width, int(width * h1 / w1)), Image.ANTIALIAS)
+    contrast = ImageEnhance.Contrast(team_pic)
+    team_pic = contrast.enhance(1.15)
     team_pic.paste(card, (int(team_pic.size[0] * padding_left), int(team_pic.size[1] * padding_top)), card.convert("RGBA"))
     team_pic.save("{}/{}".format(out_path, team_number), "PNG")
 
@@ -154,13 +157,14 @@ brand = Image.open("brand")
 width = 1366
 height = int(3 / 5 * width)
 
+
 for i in range(1, 100):
     try:
         card, top = init_card(int(width * 0.25), int(height * 1), brand)
         card, top = uni_logo_to_card(i, csv, card, top, "new_logos", 80)
         card, top = write_title(csv, i, card, top)
         card, top = write_names(csv, i, card, top)
-        create_image(i, card, "teams", "out", 0.03, 0.1, width)
-    except:
-        print("team {} failed".format(i))
+        create_image(i, card, "./teams", "out", 0.03, 0.1, width)
+    except Exception as e:
+        print("team {} failed".format(i), e.__cause__)
 
