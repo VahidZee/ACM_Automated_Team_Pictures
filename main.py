@@ -165,6 +165,9 @@ for i in range(1, 100):
         card, top = write_title(csv, i, card, top)
         card, top = write_names(csv, i, card, top)
         create_image(i, card, "./teams", "out", 0.03, 0.1, width)
+        
+        card2, top = init_card(int(width * 0.25), int(height * 1) , brand)
+        create_image(i, card2, "./teams", "out2", 0.03, 0.25, width)
     except Exception as e:
         print("team {} failed".format(i), e.__cause__)
 
