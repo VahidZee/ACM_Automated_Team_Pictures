@@ -38,10 +38,10 @@ def uni_logo_to_card(team_number, csv, card, team_info_top, uni_logos_path, uni_
     except:
         print("\033[0;31m UNI LOGO ERROR FOR TEAM NUMEBR: {} RETURNING \033[0m".format(team_number))
         return
-    uni_logo.thumbnail((int(uni_logo_height), int(uni_logo_height * uni_logo.size[1] / uni_logo.size[0])), Image.ANTIALIAS)
+    uni_logo.thumbnail((int(uni_logo_height), int(uni_logo_height)), Image.ANTIALIAS)
     card.paste(uni_logo, (int((card.size[0] - uni_logo.size[0]) / 2), int(team_info_top + 10)), uni_logo.convert("RGBA"))
     card.save("temp", "PNG")
-    return card, int(team_info_top + uni_logo.size[1] * 1.02) + 10
+    return card, int(team_info_top + uni_logo.size[1] * 1.02) + 20
 
 
 def csv_loader(path_to_csv):
@@ -157,7 +157,7 @@ height = int(3 / 5 * width)
 for i in range(1, 100):
     try:
         card, top = init_card(int(width * 0.25), int(height * 1), brand)
-        card, top = uni_logo_to_card(i, csv, card, top, "new_logos", 0.15)
+        card, top = uni_logo_to_card(i, csv, card, top, "new_logos", 80)
         card, top = write_title(csv, i, card, top)
         card, top = write_names(csv, i, card, top)
         create_image(i, card, "teams", "out", 0.03, 0.1, width)
