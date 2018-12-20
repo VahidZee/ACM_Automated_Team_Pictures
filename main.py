@@ -158,7 +158,7 @@ width = 1366
 height = int(3 / 5 * width)
 
 
-for i in range(1, 100):
+for i in range(1,84):
     try:
         card, top = init_card(int(width * 0.25), int(height * 1), brand)
         card, top = uni_logo_to_card(i, csv, card, top, "new_logos", 80)
@@ -168,6 +168,23 @@ for i in range(1, 100):
         
         card2, top = init_card(int(width * 0.25), int(height * 1) , brand)
         create_image(i, card2, "./teams", "out2", 0.03, 0.25, width)
+        try:
+            shithead, shitheadeadKing = uni_logo_to_card(i, csv, card, top, "new_logos", 80)
+            card, top = shithead, shitheadeadKing
+        except:
+            print("logo not found")
+        try:
+            card, top = write_title(csv, i, card, top)
+        except:
+            print("unable to print title")
+        try:
+            card, top = write_names(csv, i, card, top)
+        except:
+            print("unable to print names")
+        try:
+            create_image(i, card, "./teams", "out", 0.03, 0.1, width)
+        except:
+            print("unable to save images")
     except Exception as e:
         print("team {} failed".format(i), e.__cause__)
 
