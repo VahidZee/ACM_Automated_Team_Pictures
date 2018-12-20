@@ -7,7 +7,7 @@ import os
 
 def create_image(team_number, card, team_pics_path, out_path, padding_left, padding_top, width):
     try:
-        team_path = "{}/{}".format(team_pics_path, team_number)
+        team_path = "{}/{}.JPG".format(team_pics_path, team_number)
         print(team_path)
         team_pic = Image.open(team_path)
         team_pic = team_pic.convert("RGBA")
@@ -32,14 +32,13 @@ def png_safe():
     PngImagePlugin.MAX_TEXT_CHUNK = 1000000000000
 
 
-def uni_logo_to_card(team_number, csv, card, team_info_top, uni_logos_path, uni_logo_percentage, padding=0.1):
+def uni_logo_to_card(team_number, csv, card, team_info_top, uni_logos_path, uni_logo_height, padding=0.1):
     try:
         uni_logo = Image.open("{}/{}".format(uni_logos_path, csv[team_number][csv[0].index("uni")]))
     except:
         print("\033[0;31m UNI LOGO ERROR FOR TEAM NUMEBR: {} RETURNING \033[0m".format(team_number))
         return
-    uni_logo.thumbnail((int(card.size[0] * uni_logo_percentage * (1 - padding)),
-        int(card.size[0] * uni_logo_percentage * (1 - padding) * uni_logo.size[1] / uni_logo.size[0])), Image.ANTIALIAS)
+    uni_logo.thumbnail((int(uni_logo_height), int(uni_logo_height * uni_logo.size[1] / uni_logo.size[0])), Image.ANTIALIAS)
     card.paste(uni_logo, (int((card.size[0] - uni_logo.size[0]) / 2), int(team_info_top + 10)), uni_logo.convert("RGBA"))
     card.save("temp", "PNG")
     return card, int(team_info_top + uni_logo.size[1] * 1.02) + 10
@@ -142,7 +141,7 @@ def write_names( csv , team_number, card , top):
 
 
 def write_title( csv, team_number, card, top):
-    h = 30
+    h = 60
     raw_image = Image.new('RGBA', (card.width, 30), (255, 255, 255, 0))
     write_university_title(raw_image, csv[team_number][csv[0].index("Institution")])
     card.paste(raw_image, (0, top), raw_image.convert("RGBA"))
@@ -155,16 +154,13 @@ brand = Image.open("brand")
 width = 1366
 height = int(3 / 5 * width)
 
-files_list = os.listdir('./teams')
-
-
-for (i,filename) in enumerate( files_list ):
-    card, top = init_card(int(width * 0.25), int(height * 1), brand)
-    card, top = write_names( csv, int(str(filename).replace('.jpg','')) , card, top)
+for i in range(1, 100):
     try:
-        card, top = uni_logo_to_card(int(str(filename).replace('.jpg','')), csv, card, top, "new_logos", 0.15)
+        card, top = init_card(int(width * 0.25), int(height * 1), brand)
+        card, top = uni_logo_to_card(i, csv, card, top, "new_logos", 0.15)
+        card, top = write_title(csv, i, card, top)
+        card, top = write_names(csv, i, card, top)
+        create_image(i, card, "teams", "out", 0.03, 0.1, width)
     except:
-        print("exception for team number{}".format(i))
-    card, top = write_title( csv, int(str(filename).replace('.jpg','')) , card, top)
-    create_image(int(str(filename).replace('.jpg','')), card, "teams", "out", 0.03 , 0.1, width)
+        print("team {} failed".format(i))
 
