@@ -1,0 +1,2 @@
+# Contestants Automatic Image Labeler
+This is repository holds the codes developed on the job during the ICPC-2018 Iranian National Contest at sharif and is a utility that creates and labels pictures for contestant teams. 
